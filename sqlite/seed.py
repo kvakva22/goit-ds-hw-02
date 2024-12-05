@@ -4,22 +4,22 @@ import random
 
 fake=Faker()
 
-with sql.connect("D:\GoIt\sqlite\homewrk") as con:
+with sql.connect("homewrk_db.sqlite") as con:
     cur = con.cursor()
 
     con.execute("PRAGMA foreign_keys = ON;")
     con.commit()
 
     cur.execute("""CREATE TABLE IF NOT EXISTS status (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(50) UNIQUE
     );""")
 
-    cur.execute("""INSERT OR REPLACE INTO status(id, name) VALUES ('1','new'), ('2', 'in progress'), ('3', 'completed');""")
+    cur.execute("""INSERT OR IGNORE INTO status(name) VALUES ('new'), ('in progress'), ('completed');""")
     con.commit()
 
     def fake_users(records):
-        cur.execute("DROP TABLE users")
+        cur.execute("DROP TABLE IF EXISTS users")
 
         cur.execute("""CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +36,7 @@ with sql.connect("D:\GoIt\sqlite\homewrk") as con:
 
     
     def fake_tasks(n):
-        cur.execute("DROP TABLE tasks")
+        cur.execute("DROP TABLE IF EXISTS tasks")
 
         cur.execute("""CREATE TABLE tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,5 +65,3 @@ with sql.connect("D:\GoIt\sqlite\homewrk") as con:
 
     fake_users(10)
     fake_tasks(20)
-
-
